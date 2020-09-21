@@ -89,12 +89,14 @@
 	}
 	//paneme kõik pildid ekraanile
 	$piccount = count($picfiles);
+	$picnum = mt_rand(0,($piccount - 1));
 	$imghtml = "";
 	//<img src="../vp_pics/failinimi.png" alt="tekst">
-	for($i = 0; $i < $piccount; $i ++){
+	for($i = 0; $i < $picnum; $i ++){
 		$imghtml .= '<img src ="../vp_pics/' .$picfiles[$i] .'" ';
 		$imghtml .= 'alt="Tallinna Ülikool">';
 	}
+	
 	
 	//$i= $i + 1;
 	//$i ++;
