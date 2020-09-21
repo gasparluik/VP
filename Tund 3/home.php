@@ -34,15 +34,15 @@
 	
 	
 	$username = "Gaspar Luik";
-	$fulltimenow = date("d.m.Y H:i:s");
 	$hournow = date("H");
 	$partofday = "lihtsalt aeg";
 	$weekdaynameset = ["esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev", "pühapäev"];
 	$monthnameset = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
+	$fulltimenow = date("d.M.Y H:i:s");
 	//echo $weekdaynameset;
 	//var_dump($weekdaynameset);
 	$weekdaynow = date("N");
-	echo $weekdaynow;
+	//echo $weekdaynow;
 	if($hournow < 6) {
 		$partofday = "uneaeg";
 	}//enne 6
@@ -95,6 +95,7 @@
 		$imghtml .= '<img src ="../vp_pics/' .$picfiles[$i] .'" ';
 		$imghtml .= 'alt="Tallinna Ülikool">';
 	}
+	
 	//$i= $i + 1;
 	//$i ++;
 	//$i += 2; ehk kasvata nii palju ehk 2
@@ -106,6 +107,7 @@
 	<h1><?php echo $username; ?></h1>
 	<p>See  veebileht on loodud õppetöö käigus ning ei sisalda mingit tõsiseltvõetavat sisu!</p>
 	<p>See konkreetne leht on loodud veebiprogrammeerimise kursusel lehel <a href="https://www.tlu.ee"> Tallinna Ülikooli </a> Digitehnoloogiate instituudis.</p>
+	<p>Siin lehel on küsimustik <a href="http://greeny.cs.tlu.ee/~gasplui/VP/Tund%203/see%20teine%20leht.php"> Minu greeny serveris. </a></p>
 	<p>Lehe avamise hetk: <?php echo $weekdaynameset [$weekdaynow - 1].", " .$fulltimenow; ?>.</p>
 	<p><?php echo "Praegu on " .$partofday ."."; ?></p>
 
