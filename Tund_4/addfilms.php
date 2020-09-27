@@ -42,8 +42,8 @@
 	<label for="yearinput">Filmi valmimisaasta</label>
 	<input type="number" name="yearinput" id="yearinput" value="<?php echo date("Y"); ?>">
 	<br>
-	<label for="durationnput">Kestus minutites</label>
-	<input type="number" name="durationinput" id="durationnput" value="80">
+	<label for="durationinput">Kestus minutites</label>
+	<input type="number" name="durationinput" id="durationinput" value="80">
 	<br>
 	<label for="genreinput">Zanr</label>
 	<input type="text" name="genreinput" id="genreinput" placeholder="Zanr">

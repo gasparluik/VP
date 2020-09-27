@@ -6,7 +6,7 @@
     
   //loen lehele kõik olemasolevad mõtted
   $conn = new mysqli($serverhost, $serverusername, $serverpassword, $database);
-  $stmt = $conn->prepare("SELECT ideas FROM myideas");
+  $stmt = $conn->prepare("SELECT idea FROM myideas");
   echo $conn->error;
   //seome tulemuse muutujaga
   $stmt->bind_result($ideafromdb);
@@ -29,6 +29,8 @@
   
   <ul>
     <li><a href="home.php">Avaleht</a></li>
+	<br>
+	<li><a href="insertideas.php">Sisesta mõtteid</a></li>
   </ul>
   
   <hr>

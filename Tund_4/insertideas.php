@@ -29,6 +29,8 @@
  <p> Aadress tagasi kodulehele <a href="http://greeny.cs.tlu.ee/~gasplui/VP/Tund%203/home.php" > </p>
  <ul>
 	<li><a href="home.php">Tagasi avalehele</a></li>
+	<br>
+	<li><a href="listideas.php">Loe oma mõtteid</a></li>
 	</ul>
 	
 	<hr>
