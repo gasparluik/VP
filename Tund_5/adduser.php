@@ -98,9 +98,9 @@
 	  }
 	  
 	  if(empty($firstnameerror) and empty($lastnameerror) and empty($gendererror ) and empty($birthdayerror) and empty($birthyearerror)and empty($birthmontherror) and empty($birthdateerror) and empty($emailerror) and empty($passworderror) and empty($confirmpassworderror)){
-		$notice = signup($firstname, $lastname, $email, $gender, $birthdate, $_POST["passwordinput"]);
+		$result = signup($firstname, $lastname, $email, $gender, $birthdate, $_POST["passwordinput"]);
 		//$notice = "Kõik korras!";
-		if($notice == "ok"){
+		if($result == "ok"){
 			$notice = "Kõik korras, kasutaja loodud!";
 			$firstname= "";
 			$lastname = "";
@@ -113,15 +113,11 @@
 		} else {
 			$notice = "tekkis tehniline tõrge" .$result;
 		/* echo $firstname ." " .$lastname ." " .$email ." " .$gender ." " .$birthdate ." " .$_POST["passwordinput"]; */
+		}
 		
-		$firstname= "";
-	    $lastname = "";
-		$gender = "";
-		$email = "";
-	  }
-	  
+		
+}
   }
-  
 
   $username = "Gaspar Luik";
 
@@ -216,6 +212,5 @@
 	  <br>
 	  <input name="submituserdata" type="submit" value="Loo kasutaja"><span><?php echo "&nbsp; &nbsp; &nbsp;" .$notice; ?></span>
 	</form>
-  
 </body>
 </html>
