@@ -1,7 +1,7 @@
 <?php
 //sisse logimine
 require("fnc_user.php");
-require("fnnc_common.php");
+require("fnc_common.php");
   $fulltimenow = date("d.M.Y H:i:s");
   $hournow = date("H");
   $partofday = "lihtsalt aeg";
@@ -87,12 +87,86 @@ require("fnnc_common.php");
 	  $imghtml .= 'alt="Tallinna Ülikool">';
   }*/
   
+  //submit errorid
+    $firstname= "";
+  $lastname = "";
+  $gender = "";
+  $email = "";
+
+  $firstnameerror = "";
+  $lastnameerror = "";
+  $gendererror = "";
+  $emailerror = "";
+  $passworderror = "";
+  $confirmpassworderror = "";
+    
+  $notice = "";
+  
+  if(isset($_POST["submituserdata"])){
+	  
+	  if (!empty($_POST["firstnameinput"])){
+		$firstname = $_POST["firstnameinput"];
+	  } else {
+		  $firstnameerror = "Palun sisesta eesnimi!";
+	  }
+	  
+	  if (!empty($_POST["lastnameinput"])){
+		$lastname = $_POST["lastnameinput"];
+	  } else {
+		  $lastnameerror = "Palun sisesta perekonnanimi!";
+	  }
+	  
+	  if(isset($_POST["genderinput"])){
+		//$gender = intval($_POST["genderinput"]);
+		$gender = $_POST["genderinput"];
+	  } else {
+		  $gendererror = "Palun märgi sugu!";
+	  }
+	  
+	  if (!empty($_POST["emailinput"])){
+		$email = $_POST["emailinput"];
+	  } else {
+		  $emailerror = "Palun sisesta e-postiaadress!";
+	  }
+	  
+	  if (empty($_POST["passwordinput"])){
+		$passworderror = "Palun sisesta salasõna!";
+	  } else {
+		  if(strlen($_POST["passwordinput"]) < 8){
+			  $passworderror = "Liiga lühike salasõna (sisestasite ainult " .strlen($_POST["passwordinput"]) ." märki).";
+		  }
+	  }
+	  
+	  if (empty($_POST["confirmpasswordinput"])){
+		$confirmpassworderror = "Palun sisestage salasõna kaks korda!";  
+	  } else {
+		  if($_POST["confirmpasswordinput"] != $_POST["passwordinput"]){
+			  $confirmpassworderror = "Sisestatud salasõnad ei olnud ühesugused!";
+		  }
+	  }
+	  
+	  if(empty($firstnameerror) and empty($lastnameerror) and empty($gendererror ) and empty($passworderror) and empty($confirmpassworderror)){
+		$result = signup($firstname, $lastname, $email, $gender, $birthdate, $_POST["passwordinput"]);
+		//$notice = "Kõik korras!";
+		if($result == "ok"){
+			$notice = "Kõik korras, kasutaja loodud!";
+			$firstname= "";
+			$lastname = "";
+			$gender = "";
+			$email = "";
+		} else {
+			$notice = "tekkis tehniline tõrge" .$result;
+		/* echo $firstname ." " .$lastname ." " .$email ." " .$gender ." " .$_POST["passwordinput"]; */
+		}
+		
+		
+		}
+  }
   $imghtml .= '<img src="../vp_pics/' .$picfiles[mt_rand(0, ($piccount - 1))] .'" ';
   $imghtml .= 'alt="Tallinna Ülikool">';
   require("header.php");
 ?>
   <img src="../img/vp_banner.png" alt="Veebiprogrammeerimise kursuse bänner">
-  <h1><?php echo $username; ?></h1>
   <p>See veebileht on loodud õppetöö kaigus ning ei sisalda mingit tõsiseltvõetavat sisu!</p>
   <p>See konkreetne leht on loodud veebiprogrammeerimise kursusel aasta 2020 sügissemestril <a href="https://www.tlu.ee">Tallinna Ülikooli</a> Digitehnoloogiate instituudis.</p>
   

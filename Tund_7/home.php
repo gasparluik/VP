@@ -1,6 +1,7 @@
 <?php
 require("usesession.php");
 
+echo $_SESSION['bgcolor'];
 /* session_start();
   //$username = "Gaspar Luik";
   

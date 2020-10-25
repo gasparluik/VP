@@ -1,22 +1,10 @@
 <?php
-require("usesession.php");
-
-/* session_start();
-  //$username = "Gaspar Luik";
-  
-  //kas on sisse loginud
-  if(!isset($_SESSION["userid"])){
-	  //jõuga suunatakse sisselogimise lehele
-	header("Location: page.php");
-	exit();
-  }
-  //logime välja
-  if(isset($_GET["logout"])){
-	  //Lõpetame sessiooni
-	  session_destroy();
-	  header("Location: page.php");
-	  exit();
-  } */
+//käivitan sessiooni
+session_start();
+//sisse logimine
+require("../../../config.php");
+require("fnc_user.php");
+require("fnc_common.php");
   $fulltimenow = date("d.M.Y H:i:s");
   $hournow = date("H");
   $partofday = "lihtsalt aeg";
@@ -31,19 +19,16 @@ require("usesession.php");
 	  $partofday = "uneaeg";
   }//enne 6
   if($hournow >= 6 and $hournow < 8){
-	  $partofday = "Ärkamine";
+	  $partofday = "hommikuste protseduuride aeg";
   }
   if($hournow >= 8 and $hournow < 18){
-	  $partofday = "Ultimus maximus produktiivsuse aeg";
-  }
-  if($hournow >= 16 and $hournow < 18){
-	  $partofday = "Trenniaeg";
+	  $partofday = "akadeemilise aktiivsuse aeg";
   }
   if($hournow >= 18 and $hournow < 22){
-	  $partofday = "Õppimine, hobid jne";
+	  $partofday = "õhtuste toimetuste aeg";
   }
   if($hournow >= 22){
-	  $partofday = "Tuttu ära";
+	  $partofday = "päeva kokkuvõtte ning magamamineku aeg";
   }
   
   //jälgime semestri kulgu
@@ -104,32 +89,83 @@ require("usesession.php");
 	  $imghtml .= '<img src="../vp_pics/' .$picfiles[$i] .'" ';
 	  $imghtml .= 'alt="Tallinna Ülikool">';
   }*/
+  
+  //submit errorid
+  $lastname = "";
+  $gender = "";
+  $email = "";
+
+  $emailerror = "";
+  $passworderror = "";
+  $confirmpassworderror = "";
+  $notice = "";
+  
+  if(isset($_POST["submituserdata"])){
+	  if (!empty($_POST["emailinput"])){
+		//$email = test_input($_POST["emailinput"]);
+		$email = filter_var($_POST["emailinput"], FILTER_SANITIZE_EMAIL);
+		if(filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			$email = filter_var($email, FILTER_VALIDATE_EMAIL);
+		} else {
+		  $emailerror = "Palun sisesta õige kujuga e-postiaadress!";
+		}		
+	  } else {
+		  $emailerror = "Palun sisesta e-postiaadress!";
+	  }
+	  
+	  if (!empty($_POST["emailinput"])){
+		$email = $_POST["emailinput"];
+	  } else {
+		  $emailerror = "Palun sisesta e-postiaadress!";
+	  }
+	  
+	  if (empty($_POST["passwordinput"])){
+		$passworderror = "Palun sisesta salasõna!";
+	  } else {
+		  if(strlen($_POST["passwordinput"]) < 8){
+			  $passworderror = "Liiga lühike salasõna (sisestasite ainult " .strlen($_POST["passwordinput"]) ." märki).";
+		  }
+	  }
+	  
+	  if (empty($_POST["confirmpasswordinput"])){
+		$confirmpassworderror = "Palun sisestage salasõna kaks korda!";  
+	  } else {
+		  if($_POST["confirmpasswordinput"] != $_POST["passwordinput"]){
+			  $confirmpassworderror = "Sisestatud salasõnad ei olnud ühesugused!";
+		  }
+	  }
+	  
+	  if (empty($emailerror) and empty($passworderror)){
+		 //echo "Juhhei!" .$email .$_POST["passwordinput"];
+		  $notice = signin($email, $_POST["passwordinput"]);
+	  }
+  }
   $imghtml .= '<img src="../vp_pics/' .$picfiles[mt_rand(0, ($piccount - 1))] .'" ';
   $imghtml .= 'alt="Tallinna Ülikool">';
   require("header.php");
 ?>
   <img src="../img/vp_banner.png" alt="Veebiprogrammeerimise kursuse bänner">
-  <h1><?php echo $_SESSION["userfirstname"] ." " .$_SESSION["userlastname"]; ?></h1>
   <p>See veebileht on loodud õppetöö kaigus ning ei sisalda mingit tõsiseltvõetavat sisu!</p>
   <p>See konkreetne leht on loodud veebiprogrammeerimise kursusel aasta 2020 sügissemestril <a href="https://www.tlu.ee">Tallinna Ülikooli</a> Digitehnoloogiate instituudis.</p>
   
-	<li><a href="?logout=1">Logi välja</a>!</li>
-	<br>
-	<li><a href="insertideas.php">Sisesta idee</a></li>
-	<li><a href="listideas.php">Vaata sisestatud ideesid</a></li>
-    <li><a href="addfilms.php">Lisa film</a></li>
-	<li><a href="listfilms">Vaata sisestatud filme</a></li>
-	<li><a href="addfilmrelations.php">Filmide ja žanride seosed</a></li>
-	<li><a href="adduser.php">Lisa kasutaja</a></li>
-	<li><a href="userprofile.php">Kasutaja profiil</a></li>
-  	<li><a href="listfilmpersons.php">Filmides mängivad inimesed</a></li>
-	
+  <p><a href="insertideas.php">Lisa oma mõte</a> | <a href="listideas.php">Loe varasemaid mõtteid</a> | <a href="adduser.php">Lisa uus kasutaja</a> </p>
+  
   <p>Lehe avamise hetk: <?php echo $weekdaynameset[$weekdaynow - 1] .", " .$fulltimenow; ?>.</p>
   <p><?php echo "Praegu on " .$partofday ."."; ?></p>
   <p><?php echo $semesterinfo; ?></p>
   <hr>
   <?php echo $imghtml; ?>
   <hr>
-
+  <h3> Logi sisse</h3>
+  <form method="POST" action:"<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+	<label for="emailinput">E-mail (kasutajatunnus):</label><br>
+	  <input type="email" name="emailinput" id="emailinput" value="<?php echo $email; ?>"><span><?php echo $emailerror; ?></span>
+	  <br>
+	  <label for="passwordinput">Salasõna (min 8 tähemärki):</label>
+	  <br>
+	  <input name="passwordinput" id="passwordinput" type="password"><span><?php echo $passworderror; ?></span>
+	  <br>
+	  <input name="submituserdata" type="submit" value="Logi sisse"><span><?php echo "&nbsp; &nbsp; &nbsp;" .$notice; ?></span>
+	</form>
 </body>
 </html>

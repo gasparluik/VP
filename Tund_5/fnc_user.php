@@ -2,10 +2,10 @@
 $database = "if20_gaspar_lu_1";
 
 function signup($firstname, $lastname, $email, $gender, $birthdate, $password) {
-	$notice = null;
+	$notice = "";
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
 	$stmt = $conn->prepare("INSERT INTO vpusers (firstname, lastname, birthdate, gender, email, password) VALUES(?,?,?,?,?,?)");
-	echo $conn-error;
+	echo $conn->error;
 	
 	//krüpteerime salasõna ([] tähendab et tegu on massiiviga)
 	$options = ["cost" => 12, "salt" => substr(sha1(rand()), 0, 22)]; // subst ehk 0->22 esimesed arvud; sha1->annab kõik tähem'rgid võimalikeks arvudeks
@@ -67,4 +67,4 @@ function validate($email){
 		echo("$email ei ole reaalne emailiaadress");
 
 	}
-?>
+}

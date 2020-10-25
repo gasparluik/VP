@@ -1,54 +1,65 @@
 <?php
-require("usesession.php");
-require("../../../config.php");
-require("fnc_user.php");
-require("fnc_common.php");
-
-  //var_dump($_POST);
-  //$database = "if20_gaspar_lu_1";
+  session_start();
   
-  //$filmhtml = readfilms(); filmhtml väärtus on funktsiooni vastus
-  $notice = "";
-  $userdescription = "";
-  //kui klikiti submit, siis...
-  
-  if(isset($_POST["profilesubmit"])){
-	  $userdescription = test_input ($_POST["descriptioninput"]);
-  
-	$notice = storeuserprofile($userdescription, $_POST["bgcolorinput"], $_POST["txtcolorinput"]);
-	$_SESSION["bgcolor"] = $_POST["bgcolorinput"];
-	$_SESSION["txtcolor"] = $_POST["txtcolorinput"];
+  //kui pole sisseloginud
+  if(!isset($_SESSION["userid"])){
+	  //jõugu sisselogimise lehele
+	  header("Location: page.php");
   }
- 
+  //väljalogimine
+  if(isset($_GET["logout"])){
+	  session_destroy();
+	   header("Location: page.php");
+	   exit();
+  }
+  
+  //loeme andmebaasi login ifo muutujad
+  require("../../../config.php");
+  require("fnc_user.php");
+  
+  
+  //kui klikiti nuppu, siis kontrollime ja salvestame
+  $notice = "";
+  $description = readdescription();
+
+  
+  //algatuseks valin vaikimisivärvid
+  /*$_SESSION["txtcolor"] = "#000000";
+  $_SESSION["bgcolor"] = "#FFFFFF";*/
+  if(isset($_POST["profilesubmit"])){
+	$notice = storeuserprofile($_POST["descriptioninput"], $_POST["bgcolorinput"], $_POST["txtcolorinput"]);
+	$description = $_POST["descriptioninput"];
+	$_SESSION["txtcolor"] = $_POST["txtcolorinput"];
+  $_SESSION["bgcolor"] = $_POST["bgcolorinput"];
+  }
+  
   require("header.php");
 ?>
+
   <img src="../img/vp_banner.png" alt="Veebiprogrammeerimise kursuse bänner">
-  <h1><?php echo $_SESSION["userfirstname"] ." " .$_SESSION["userlastname"]; ?></h1>
-  <p>See veebileht on loodud õppetöö kaigus ning ei sisalda mingit tõsiseltvõetavat sisu!</p>
-  <p>See konkreetne leht on loodud veebiprogrammeerimise kursusel aasta 2020 sügissemestril <a href="https://www.tlu.ee">Tallinna Ülikooli</a> Digitehnoloogiate instituudis.</p>
-  
+  <h1><?php echo $_SESSION["userfirstname"] ." " .$_SESSION["userlastname"]; ?> kasutajaprofiil</h1>
+  <p>See veebileht on loodud õppetöö käigus ning ei sisalda mingit tõsiseltvõetavat sisu!</p>
+  <p>Leht on loodud veebiprogrammeerimise kursusel <a href="http://www.tlu.ee">Tallinna Ülikooli</a> Digitehnoloogiate instituudis.</p>
+    
   <ul>
+    <li><a href="home.php">Avalehele</a></li>
 	<li><a href="?logout=1">Logi välja</a>!</li>
-    <li><a href="home.php">Avaleht</a></li>
-	<li><a href="listfilms.php">Vaata sisestatud filme</a></li>
   </ul>
-  
   <hr>
-  
-  <form method="POST" action:"<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-	<label for="descriptioninput">Minu lühikirjeldus</label>
+  <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    <label for="descriptioninput">Minu lühitutvustus: </label><br>
+	<textarea rows="10" cols="80" name="descriptioninput" id="descriptioninput" placeholder="Minu tutvustus ..."><?php echo $description; ?></textarea>
 	<br>
-	<textarea rows="10" cols="80" name="descriptioninput" id="descriptioninput" placeholder="Minu lühikirjeldus..."><?php echo $userdescription; ?></textarea>
+	<label for="bgcolorinput">Minu valitud taustavärv: </label>
+	<input type="color" name="bgcolorinput" id="bgcolorinput" value="<?php echo $_SESSION["bgcolor"]; ?>">
 	<br>
-	<label for="bgcolorinput">Minu valitud taustavärv</label>
-	<input type="color" name="bgcolorinput" id="bgcolorinput" value="<?php echo $_SESSION["userbgcolor"]; ?>">
+	<label for="txtcolorinput">Minu valitud tekstivärv: </label>
+	<input type="color" name="txtcolorinput" id="txtcolorinput" value="<?php echo $_SESSION["txtcolor"]; ?>">
 	<br>
-	<label for="txtcolorinput">Minu valitud tekstivärv</label>
-	<input type="color" name="txtcolorinput" id="txtcolorinput" value="<?php echo $_SESSION["usertxtcolor"]; ?>">
-	<br>
-	
 	<input type="submit" name="profilesubmit" value="Salvesta profiil">
   </form>
   <p><?php echo $notice; ?></p>
+  
 </body>
 </html>
+
