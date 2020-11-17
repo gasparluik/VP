@@ -88,11 +88,11 @@ $notice = "";
 	  }
   }
   
-  $filmselecthtml = readmovietoselect($selectedfilm);
+  /* $filmselecthtml = readmovietoselect($selectedfilm);
   $filmgenreselecthtml = readgenretoselect($selectedgenre);
   $filmstudioselecthtml = readstudiotoselect($selectedstudio);
-  $filmpersonselecthtml = readpersoninmovie($sortby, $sortorder);
-  $filmquoteselecthtml = readquotetoselect($selectedquote);
+  $filmpersonselecthtml = readpersoninmovietoselect($selectedperson);
+  $filmquoteselecthtml = readquotetoselect($selectedperson,$selectedquote); */
 
   require("header.php");
 ?>
