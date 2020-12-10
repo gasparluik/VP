@@ -46,12 +46,12 @@ function readhauls($sortby, $sortorder){
 }
 
 //Salvestan saabunud veosed
-function savehaul($weightfromdb, $afterweightfromdb, $carnrinputfromdb, $haulhaultypefromdb){
+function savehaul($weightfromdb, $afterweightfromdb, $carnrinputfromdb, $haultypefromdb){
 	//$count= ("SELECT haul_id, (weight - afterweight) as count FROM haul_data");
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
 	$stmt = $conn->prepare("INSERT INTO haul_data (weight, afterweight, carnumber, haultype) VALUES(?,?,?,?)");
 	echo $conn->error;
-	$stmt->bind_param("ddss", $_POST["weightinput"],$_POST["afterweightinput"], $_POST["carnrinput"], $_POST["haulhaultype"]);
+	$stmt->bind_param("ddss",$weightfromdb, $afterweightfromdb, $carnrinputfromdb, $haultypefromdb);
 	$stmt->execute();
 	$stmt->close();
 	$conn->close();
@@ -60,15 +60,16 @@ function savehaul($weightfromdb, $afterweightfromdb, $carnrinputfromdb, $haulhau
 }//savehaullõppeb
 
 //Valin juba saabunud veosed
+
 $selectedhaul = "";
 
 function readhaulstoselect($selectedhaul){
 	$notice = "<p>Kahjuks veoseid ei leitud!</p> \n";
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
-	$stmt = $conn->prepare("SELECT haul_id, carnumber  FROM haul_data WHERE haultype IS NULL");
+	$stmt = $conn->prepare("SELECT haul_id, carnumber, weight FROM haul_data WHERE afterweight IS NULL");
 	//ei saa teha WHERE afterweight AND typehaul IS NULL, sest andmebaasis jääb alati tühja afterweighti väärtuseks 0.000
 	echo $conn->error;
-	$stmt->bind_result($idfromdb, $carnrinputfromdb);
+	$stmt->bind_result($idfromdb, $carnrinputfromdb, $weightfromdb);
 	$stmt->execute();
 	$hauls = "";
 	while($stmt->fetch()){
@@ -90,12 +91,12 @@ function readhaulstoselect($selectedhaul){
 	return $notice;
 }
 
-function updatedata($selectedcar, $afterweightfromdb, $haulhaultypefromdb){
+function updatedata($afterweightfromdb, $haultypefromdb, $selectedcar){
 	$notice = null;
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
-	$stmt = $conn->prepare("UPDATE haul_data SET afterweight = ?, haultype = ? WHERE haul_id = ?");
+	$stmt = $conn->prepare("UPDATE haul_data SET afterweight = ?  AND haultype = ? WHERE haul_id = ?");
 	echo $conn->error;
-	$stmt->bind_result($afterweightfromdb, $haulhaultypefromdb, $selectedcar);
+	$stmt->bind_param("dsi", $afterweightfromdb, $haultypefromdb, $selectedcar);
 	if($stmt->execute()){
 		$notice ="Kõik on korras!";
 	} else{

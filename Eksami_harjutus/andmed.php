@@ -3,7 +3,8 @@ require("../../../config.php");
 require("fnc_data.php");
 require("fnc_common.php");
 
-  $senddata = "";   
+  $senddata = "";
+  $sendupdate = "";   
   $inputerror = "";
 
 
@@ -13,7 +14,7 @@ require("fnc_common.php");
   $afterweightfromdb = null;
   $haultypefromdb = "";
   $idfromdb = null;
-  $result = "";
+  $sendupdate = "";
   $carselecthtml = "";
   
   $selectedcar = "";
@@ -24,7 +25,7 @@ require("fnc_common.php");
     if(empty($_POST["carnrinput"])){
       $inputerror .= "Sisestage auto registrinumber";
   } else {
-      $carnnrinputfromdb = test_input($_POST["carnrinput"]);
+      $carnrinputfromdb = test_input($_POST["carnrinput"]);
   }
   if(empty($_POST["weightinput"])){
       $inputerror .= "Sisestage auto sisenemismass";
@@ -39,37 +40,37 @@ require("fnc_common.php");
   }
   if(empty($inputerror)){
       $senddata = savehaul($weightfromdb, $afterweightfromdb, $carnrinputfromdb, $haultypefromdb);
-      if($result == 1){
+      if($sendupdate == 1){
           $notice .= "Salvestatud!";
       } else {
-          $inputerror .= "Salvestamisel tekkis torge. " .$result;
+          $inputerror .= "Salvestamisel tekkis torge. " .$sendupdate;
       }
   }
 }
 
 if(isset($_POST["carsubmit"])){
   if(!empty($_POST["carnrinput"])){
-    $selectedcar = intval($_POST["carnrinput"]);
-} else {
-    $ninputerror .= " Vali masin!";
-}
-  if(empty($_POST["afterweightinput"])){
-    $inputerror .= "Sisestage auto tühimass";
-} else {
-    $carnnrinputfromdb = test_input($_POST["afterweightinput"]);
-}
-if(empty($_POST["typeinput"])){
-    $inputerror .= "Sisestage kauba nimetus";
-} else {
-    $weightfromdb = test_input($_POST["typeinput"]);
-}
-}
-if(empty($inputerror)){
-  //$senddata = updatedata($selectedcar, $weightfromdb, $haultypefromdb);
-  if($result == 1){
-      $notice .= "Salvestatud!";
+    $selectedcar = test_input($_POST["carnrinput"]);
   } else {
-      $inputerror .= "Salvestamisel tekkis torge. " .$result;
+    $inputerror .= "Vali andmebaasist kaalumata auto!";
+  }
+  if(empty($_POST["afterweightinput2"])){
+    $inputerror .= "Sisestage auto tühimass";
+  } else {
+    $afterweightfromdb = test_input($_POST["afterweightinput2"]);
+  }
+  if(empty($_POST["haultype2"])){
+      $inputerror .= "Sisestage kauba nimetus";
+  } else {
+      $haultypefromdb = test_input($_POST["haultype2"]);
+  }
+  if(empty($inputerror)){
+    $sendupdate = updatedata($selectedcar, $afterweightfromdb, $haultypefromdb);
+    if($sendupdate == 1){
+        $notice .= "Salvestatud!";
+    } else {
+        $inputerror .= "Salvestamisel tekkis torge. " .$sendupdate;
+    }
   }
 }
 
@@ -88,10 +89,10 @@ $carselecthtml = readhaulstoselect($selectedhaul);
   <hr>
   <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
     <label for="carnrinput">Auto registrinumber</label>
-    <input type="text" name="carnrinput" id="carnrinput" placeholder="Number" required echo $inputerror;>
+    <input type="text" name="carnrinput" id="carnrinput" placeholder="Number" required>
     <br>
     <label for="weightinput">Sisenemismass(kg)</label>
-    <input type="number" step="any" name="weightinput" id="weightinput" placeholder="Kaal kilogrammides"required>
+    <input type="number" step="any" name="weightinput" id="weightinput" placeholder="Kaal kilogrammides" required>
     <br>
     <label for="afterweightinput">Lõppkaal laost väljumisel</label>
     <input type="number" step="any" name="afterweightinput" id="afterweightinput" placeholder="Kaal kilogrammides">
@@ -116,14 +117,20 @@ $carselecthtml = readhaulstoselect($selectedhaul);
       echo $carselecthtml;
     ?>
   <br>
-  <label for="afterweightinput">Lõppkaal laost väljumisel</label>
-	  <input type="number" step="any" name="afterweightinput" id="afterweightinput" placeholder="Kaal kilogrammides" required>
+  <label for="afterweightinput2">Lõppkaal laost väljumisel</label>
+	  <input type="number" step="any" name="afterweightinput2" id="afterweightinput2" placeholder="Kaal kilogrammides" required>
   <br>
-  <label for="haultype">Koorma nimetus</label>
-    <input type="text" name="haultype" id="haultype" placeholder="Kaup">
+  <label for="haultype2">Koorma nimetus</label>
+    <input type="text" name="haultype2" id="haultype2" placeholder="Kaup">
     <br>
   <input type="submit" name="carsubmit" value="Salvesta">
-
+  <br>
+    <?php
+      echo $inputerror;
+      echo $notice;
+      echo $sendupdate;
+    ?>
+  <br>
   </form>
 </body>
 </html>
