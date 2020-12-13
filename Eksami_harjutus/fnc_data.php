@@ -50,12 +50,12 @@ function savehaul($weightfromdb, $afterweightfromdb, $carnrinputfromdb, $haultyp
 	//$count= ("SELECT haul_id, (weight - afterweight) as count FROM haul_data");
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
 	$stmt = $conn->prepare("INSERT INTO haul_data (weight, afterweight, carnumber, haultype) VALUES(?,?,?,?)");
+	//hetkel ei salvesta haultypei ära!!!!
 	echo $conn->error;
 	$stmt->bind_param("ddss",$weightfromdb, $afterweightfromdb, $carnrinputfromdb, $haultypefromdb);
 	$stmt->execute();
 	$stmt->close();
 	$conn->close();
-	echo "Savehaul lõpetatud";
 
 }//savehaullõppeb
 
@@ -69,7 +69,7 @@ function readhaulstoselect($selectedhaul){
 	$stmt = $conn->prepare("SELECT haul_id, carnumber, weight FROM haul_data WHERE afterweight IS NULL");
 	//ei saa teha WHERE afterweight AND typehaul IS NULL, sest andmebaasis jääb alati tühja afterweighti väärtuseks 0.000
 	echo $conn->error;
-	$stmt->bind_result($idfromdb, $carnrinputfromdb, $weightfromdb);
+	$stmt->bind_result($idfromdb, $selectedcar, $weightfromdb);
 	$stmt->execute();
 	$hauls = "";
 	while($stmt->fetch()){
@@ -77,7 +77,7 @@ function readhaulstoselect($selectedhaul){
 		if($idfromdb == $selectedhaul){
 			$hauls .= " selected";
 		}
-		$hauls .= ">" .$carnrinputfromdb ."</option> \n";
+		$hauls .= ">" .$selectedcar ."</option> \n";
 	}
 	if(!empty($hauls)){
 		$notice = '<select name="carnrinput">' ."\n";
@@ -93,18 +93,21 @@ function readhaulstoselect($selectedhaul){
 
 function updatedata($afterweightfromdb, $haultypefromdb, $selectedcar){
 	$notice = null;
+	$result = null;
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
-	$stmt = $conn->prepare("UPDATE haul_data SET afterweight = ?  AND haultype = ? WHERE haul_id = ?");
+	$stmt = $conn->prepare("UPDATE haul_data SET afterweight = ?, haultype = ? WHERE haul_id = ?");
+	//Nagu saaadab info aga väärtuseks paneb 0.00 ??
 	echo $conn->error;
 	$stmt->bind_param("dsi", $afterweightfromdb, $haultypefromdb, $selectedcar);
 	if($stmt->execute()){
-		$notice ="Kõik on korras!";
+		$result = 1;
+		$notice ="Andmed uuendatud!";
 	} else{
+		$result = 0;
 		$notice = $conn->error;
 	}
 	$stmt->close();
 	$conn->close();
-	return $notice;
 
 }
 ?>

@@ -6,7 +6,8 @@ require("fnc_common.php");
   $senddata = "";
   $sendupdate = "";   
   $inputerror = "";
-
+  $updateerror = "";
+  $result = null;
 
   $notice = "";
   $carnrinputfromdb = "";
@@ -40,10 +41,10 @@ require("fnc_common.php");
   }
   if(empty($inputerror)){
       $senddata = savehaul($weightfromdb, $afterweightfromdb, $carnrinputfromdb, $haultypefromdb);
-      if($sendupdate == 1){
+      if($senddata == 1){
           $notice .= "Salvestatud!";
       } else {
-          $inputerror .= "Salvestamisel tekkis torge. " .$sendupdate;
+          $inputerror .= "Salvestamisel tekkis tõrge. " .$sendupdate;
       }
   }
 }
@@ -52,24 +53,24 @@ if(isset($_POST["carsubmit"])){
   if(!empty($_POST["carnrinput"])){
     $selectedcar = test_input($_POST["carnrinput"]);
   } else {
-    $inputerror .= "Vali andmebaasist kaalumata auto!";
+    $updateerror .= "Vali andmebaasist kaalumata auto!";
   }
   if(empty($_POST["afterweightinput2"])){
-    $inputerror .= "Sisestage auto tühimass";
+    $updateerror .= "Sisestage auto tühimass";
   } else {
     $afterweightfromdb = test_input($_POST["afterweightinput2"]);
   }
   if(empty($_POST["haultype2"])){
-      $inputerror .= "Sisestage kauba nimetus";
+    $updateerror .= "Sisestage kauba nimetus";
   } else {
       $haultypefromdb = test_input($_POST["haultype2"]);
   }
-  if(empty($inputerror)){
-    $sendupdate = updatedata($selectedcar, $afterweightfromdb, $haultypefromdb);
-    if($sendupdate == 1){
+  if(empty($updateerror)){
+    $sendupdate = updatedata($afterweightfromdb, $haultypefromdb, $selectedcar);
+    if($result == 1){
         $notice .= "Salvestatud!";
     } else {
-        $inputerror .= "Salvestamisel tekkis torge. " .$sendupdate;
+      $updateerror .= "Salvestamisel tekkis tõrge. " .$sendupdate;
     }
   }
 }
@@ -104,7 +105,6 @@ $carselecthtml = readhaulstoselect($selectedhaul);
   </form>
   <br>
     <?php
-      echo $inputerror;
       echo $notice;
     ?>
   <br>
@@ -126,8 +126,6 @@ $carselecthtml = readhaulstoselect($selectedhaul);
   <input type="submit" name="carsubmit" value="Salvesta">
   <br>
     <?php
-      echo $inputerror;
-      echo $notice;
       echo $sendupdate;
     ?>
   <br>
