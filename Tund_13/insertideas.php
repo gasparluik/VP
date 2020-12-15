@@ -5,7 +5,7 @@ require("usesession.php");
 	require("../../../config.php");
 	$database = "if20_gaspar_lu_1";
 	//kui on idee sisestatud ja nuppu vajutatud, salvestame selle andmebaasi
-	if(isset($_POST["ideasubmit"]) and !empty($_POST["ideainput"]));{
+	if(isset($_POST["ideasubmit"]) and !empty($_POST["ideainput"])){
 		
 	$conn = new mysqli($serverhost, $serverusername, $serverpassword, $database);
 	//valmistan ette sql käsu stmt= statement

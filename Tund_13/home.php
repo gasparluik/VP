@@ -41,6 +41,8 @@
 	<li><a href="photoupload.php">Galeriipiltide üleslaadimine</a></li>
 	<li><a href="photogallery_public.php">Avalik fotogalerii</a></li>
   <li><a href="addnews.php">Uudiste sisestamine</a></li>
+  <br>
+  <li><a href="insertMessages">Sõnumite saatmine</a></li>
   </ul>
   
   <hr>
